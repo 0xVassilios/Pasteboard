@@ -5,7 +5,7 @@ void Clipboard::add(char* text) {
     note.text = text;
 
     // Checking for duplicate notes.
-    for (int index=0; index < this->notes.size; index++) {
+    for (int index=0; index < this->notes.size(); index++) {
         Note currentNote = this->notes.at(index);
 
         if (currentNote.text == text) {

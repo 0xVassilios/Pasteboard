@@ -15,7 +15,7 @@ void SystemTrayIcon::configure(HWND winHandle, HINSTANCE hInstance) {
 
 void SystemTrayIcon::command(LPARAM param) {
     switch(param) {
-        case WM_LBUTTONDBLCLK:
+        case WM_RBUTTONDOWN:
             MessageBox(NULL, (LPCSTR) "Message", (LPCSTR) "Title", MB_OK);
             break;
     }
