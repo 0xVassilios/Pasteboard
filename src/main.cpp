@@ -31,7 +31,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     winClass.lpszMenuName  = (LPCSTR) "Pasteboard";
     winClass.style         = CS_HREDRAW | CS_VREDRAW;
 
-    //TODO: Add error checking.
     RegisterClass(&winClass);
     
     // Creating the window.
@@ -54,7 +53,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     systemTrayIcon.configure(winHandle, hInstance);
 
     // Event Loop.
-    //TODO: Make loop conditional.
     MSG message;
     while (TRUE) {
         while (PeekMessage(&message, winHandle, 0, 0, PM_REMOVE)) {

@@ -1,9 +1,19 @@
 #include "clipboard.h"
 
 void Clipboard::add(char* text) {
-    //TODO: Check for duplicates.
     Note note;
     note.text = text;
+
+    // Checking for duplicate notes.
+    for (int index=0; index < this->notes.size; index++) {
+        Note currentNote = this->notes.at(index);
+
+        if (currentNote.text == text) {
+            currentNote.creation = std::time(0);
+            return;
+        }
+    }
+
     note.creation = std::time(0);
     this->notes.push_back(note);
 }
