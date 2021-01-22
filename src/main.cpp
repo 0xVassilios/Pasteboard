@@ -1,57 +1,19 @@
-#define _WIN32_WINNT 0x0600 // Minimum Compatible Version: Windows Vista
-
-#include "clipboard.h"
+#include "Clipboard.h"
+#include "SystemTrayIcon.h"
 #include <iostream>
 #include <windows.h>
-#include <shellapi.h>
 
+SystemTrayIcon systemTrayIcon = SystemTrayIcon();
 Clipboard clipboard = Clipboard();
 
 LRESULT CALLBACK ClipboardProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    switch(uMsg) {
-        case WM_CREATE: {
-            // Watch the clipbaord content.
-            AddClipboardFormatListener(hwnd);
-            break;
-        }
-
-        case WM_DESTROY: {
-            // Stop watching the clipboard content.
-            RemoveClipboardFormatListener(hwnd);
-            break;
-        }
-
-        case WM_CLIPBOARDUPDATE: {
-            // Clipboard Changes Happened.
-            OpenClipboard(hwnd);
-            clipboard.add((char*) GetClipboardData(CF_TEXT));
-            CloseClipboard();
-            break;
-        }
-
-        case WM_CLOSE: {
-            DestroyWindow(hwnd);
-            break;
-        }
-
-        // This is for the system tray notification.
-        case (WM_USER + 1): {
-            switch(lParam) {
-                case WM_LBUTTONDBLCLK:
-                    MessageBox(NULL, (LPCSTR) "Message", (LPCSTR) "Title", MB_OK);
-                    break;
-                default:
-                    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-            }
-            break;
-        }
-
-        default: {
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
-        }
+    if (uMsg == WM_CREATE || uMsg == WM_DESTROY || uMsg == WM_CLIPBOARDUPDATE || uMsg == WM_CLOSE) {
+        clipboard.configure(hwnd);
+        clipboard.command(uMsg);
+    } else if (uMsg == (WM_USER + 1)) {
+        systemTrayIcon.command(lParam);
     }
-
-    return 0;
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 
@@ -88,19 +50,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
         NULL                               // Additional Data.
     );
 
-    // Notification.
-    NOTIFYICONDATA nid;
-
-    nid.cbSize           = sizeof(NOTIFYICONDATA);           // The size of the structure.
-    nid.hIcon            = (HICON) LoadImage(NULL, "clipboard.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE|LR_DEFAULTSIZE); 
-    nid.hWnd             = winHandle;                        // The handle of the window that processes information.
-    nid.uCallbackMessage = (WM_USER + 1);                    // The message to be sent to the procedure when called.
-    nid.uFlags           = NIF_MESSAGE | NIF_ICON | NIF_TIP; // Extra variables for the icon.
-    nid.uID              = 100;                              // The unique ID for our icon.
-    nid.uVersion         = NOTIFYICON_VERSION;               // Defines the behaviour of the icon based on the Win version.
-    strncpy(nid.szTip, "Pasteboard", sizeof(nid.szTip));
-
-    Shell_NotifyIcon(NIM_ADD, &nid);
+    // System Tray Icon.
+    systemTrayIcon.configure(winHandle, hInstance);
 
     // Event Loop.
     //TODO: Make loop conditional.
