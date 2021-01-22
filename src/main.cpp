@@ -3,35 +3,47 @@
 #include "clipboard.h"
 #include <iostream>
 #include <windows.h>
+#include <shellapi.h>
 
 Clipboard clipboard = Clipboard();
 
-LRESULT CALLBACK WinProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK ClipboardProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch(uMsg) {
         case WM_CREATE: {
             // Watch the clipbaord content.
             AddClipboardFormatListener(hwnd);
-            return FALSE;
+            break;
         }
 
         case WM_DESTROY: {
             // Stop watching the clipboard content.
             RemoveClipboardFormatListener(hwnd);
-            return FALSE;
+            break;
         }
 
         case WM_CLIPBOARDUPDATE: {
             // Clipboard Changes Happened.
             OpenClipboard(hwnd);
-            HANDLE text = GetClipboardData(CF_TEXT);
-            clipboard.add((char*) text);
+            clipboard.add((char*) GetClipboardData(CF_TEXT));
             CloseClipboard();
-            return FALSE;
+            break;
         }
 
         case WM_CLOSE: {
             DestroyWindow(hwnd);
-            return FALSE;
+            break;
+        }
+
+        // This is for the system tray notification.
+        case (WM_USER + 1): {
+            switch(lParam) {
+                case WM_LBUTTONDBLCLK:
+                    MessageBox(NULL, (LPCSTR) "Message", (LPCSTR) "Title", MB_OK);
+                    break;
+                default:
+                    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+            }
+            break;
         }
 
         default: {
@@ -42,6 +54,7 @@ LRESULT CALLBACK WinProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     return 0;
 }
 
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, int nCmdShow) {
     WNDCLASS winClass;
     
@@ -51,7 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     winClass.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
     winClass.hInstance     = hInstance;
     winClass.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
-    winClass.lpfnWndProc   = (WNDPROC) WinProcedure;
+    winClass.lpfnWndProc   = (WNDPROC) ClipboardProcedure;
     winClass.lpszClassName = (LPCSTR) "PasteboardWindowClass";
     winClass.lpszMenuName  = (LPCSTR) "Pasteboard";
     winClass.style         = CS_HREDRAW | CS_VREDRAW;
@@ -74,7 +87,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
         hInstance,                         // Instance Handle.
         NULL                               // Additional Data.
     );
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+
+    // Notification.
+    NOTIFYICONDATA nid;
+
+    nid.cbSize           = sizeof(NOTIFYICONDATA);           // The size of the structure.
+    nid.hIcon            = LoadIcon(NULL, IDI_APPLICATION);  // The handle for the icon used.
+    nid.hWnd             = winHandle;                        // The handle of the window that processes information.
+    nid.uCallbackMessage = (WM_USER + 1);                    // The message to be sent to the procedure when called.
+    nid.uFlags           = NIF_MESSAGE | NIF_ICON | NIF_TIP; // Extra variables for the icon.
+    nid.uID              = 100;                              // The unique ID for our icon.
+    nid.uVersion         = NOTIFYICON_VERSION;               // Defines the behaviour of the icon based on the Win version.
+
+    Shell_NotifyIcon(NIM_ADD, &nid);
 
     // Event Loop.
     //TODO: Make loop conditional.
