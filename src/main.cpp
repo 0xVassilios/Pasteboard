@@ -61,19 +61,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     
     // Creating the window.
     HWND winHandle = CreateWindowEx(
-        0,                         // Window Styles
+        0,                                 // Window Styles
         (LPCSTR) "PasteboardWindowClass",  // Window Class.
         (LPCSTR) "Pasteboard",             // Window Text.
-        WS_OVERLAPPED,             // Window Style.
-        CW_USEDEFAULT,             // X.
-        CW_USEDEFAULT,             // Y.
-        CW_USEDEFAULT,             // nWidth.
-        CW_USEDEFAULT,             // nHeight.
-        NULL,                      // Parent Window.
-        NULL,                      // Menu.
-        hInstance,                 // Instance Handle.
-        NULL                       // Additional Data.
+        WS_OVERLAPPED,                     // Window Style.
+        CW_USEDEFAULT,                     // X.
+        CW_USEDEFAULT,                     // Y.
+        CW_USEDEFAULT,                     // nWidth.
+        CW_USEDEFAULT,                     // nHeight.
+        NULL,                              // Parent Window.
+        NULL,                              // Menu.
+        hInstance,                         // Instance Handle.
+        NULL                               // Additional Data.
     );
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 
     // Event Loop.
     //TODO: Make loop conditional.
@@ -83,7 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
             TranslateMessage(&message);
             DispatchMessage(&message);
         }
-    }   
+    }
 
     return 0;
 }
