@@ -1,11 +1,11 @@
 pasteboard : main.o clipboard.o
-	g++ -o pasteboard main.o clipboard.o
+	g++ -o pasteboard Main.o clipboard.o
 
-main.o : src/main.cpp
-	g++ -c src/main.cpp
+main.o : src/Main.cpp
+	g++ -c src/Main.cpp
 
-clipboard.o : src/clipboard.cpp src/clipboard.h
-	g++ -c src/clipboard.cpp
+clipboard.o : src/Clipboard.cpp src/Clipboard.h
+	g++ -c src/Clipboard.cpp
 
 .PHONY: clean
 
