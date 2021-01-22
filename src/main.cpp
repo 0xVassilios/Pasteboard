@@ -98,6 +98,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     nid.uFlags           = NIF_MESSAGE | NIF_ICON | NIF_TIP; // Extra variables for the icon.
     nid.uID              = 100;                              // The unique ID for our icon.
     nid.uVersion         = NOTIFYICON_VERSION;               // Defines the behaviour of the icon based on the Win version.
+    strncpy(nid.szTip, "Pasteboard", sizeof(nid.szTip));
 
     Shell_NotifyIcon(NIM_ADD, &nid);
 
