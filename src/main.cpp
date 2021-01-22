@@ -92,7 +92,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, LPSTR lpCmdLine, in
     NOTIFYICONDATA nid;
 
     nid.cbSize           = sizeof(NOTIFYICONDATA);           // The size of the structure.
-    nid.hIcon            = LoadIcon(NULL, IDI_APPLICATION);  // The handle for the icon used.
+    nid.hIcon            = (HICON) LoadImage(NULL, "clipboard.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE|LR_DEFAULTSIZE); 
     nid.hWnd             = winHandle;                        // The handle of the window that processes information.
     nid.uCallbackMessage = (WM_USER + 1);                    // The message to be sent to the procedure when called.
     nid.uFlags           = NIF_MESSAGE | NIF_ICON | NIF_TIP; // Extra variables for the icon.
