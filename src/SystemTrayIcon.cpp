@@ -21,8 +21,10 @@ void SystemTrayIcon::command(LPARAM param) {
             POINT point;
             GetCursorPos(&point);
             HMENU hMenu = CreatePopupMenu();
+
             InsertMenu(hMenu, 0, MF_BYPOSITION | MF_STRING, 110, (LPCSTR) "Notes");
             InsertMenu(hMenu, 1, MF_BYPOSITION | MF_STRING, 100, (LPCSTR) "Exit");
+            SetForegroundWindow(this->winHandle); // By setting the window on the foreground, it automatically closes when it loses focus.
             TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN, point.x, point.y, 0, this->winHandle, NULL);
             break;
     }
