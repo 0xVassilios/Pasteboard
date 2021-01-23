@@ -9,11 +9,18 @@ SystemTrayIcon systemTrayIcon = SystemTrayIcon();
 Clipboard clipboard = Clipboard();
 
 LRESULT CALLBACK ClipboardProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    // CLipboard Related Stuff.
     if (uMsg == WM_CREATE || uMsg == WM_DESTROY || uMsg == WM_CLIPBOARDUPDATE || uMsg == WM_CLOSE) {
         clipboard.configure(hwnd);
         clipboard.command(uMsg);
+
+    // System Tray Related Stuff.
     } else if (uMsg == WM_USERACTION) {
         systemTrayIcon.command(lParam);
+
+    // System Tray Notification.
+    } else if (uMsg == WM_COMMAND) {
+        systemTrayIcon.command(wParam);
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

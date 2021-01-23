@@ -16,14 +16,28 @@ void SystemTrayIcon::configure(HWND winHandle, HINSTANCE hInstance) {
 }
 
 void SystemTrayIcon::command(LPARAM param) {
-    //TODO: Make exit button work. InsertMenu
     switch(param) {
         case WM_RBUTTONDOWN:
             POINT point;
             GetCursorPos(&point);
             HMENU hMenu = CreatePopupMenu();
-            InsertMenu(hMenu, 0, MF_BYPOSITION | MF_STRING, 100, (LPCSTR) "Exit");
+            InsertMenu(hMenu, 0, MF_BYPOSITION | MF_STRING, 110, (LPCSTR) "Notes");
+            InsertMenu(hMenu, 1, MF_BYPOSITION | MF_STRING, 100, (LPCSTR) "Exit");
             TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN, point.x, point.y, 0, this->winHandle, NULL);
+            break;
+    }
+}
+
+void SystemTrayIcon::command(WPARAM param) {
+    switch (param) {
+        case MENU_BUTTON_CLOSE:
+            DestroyWindow(this->winHandle);
+            break;
+
+        case MENU_BUTTON_OPEN:
+            MessageBox(this->winHandle, (LPCSTR) "WIP: Open the menu.", (LPCSTR) "Notes", MB_OK);
+
+        default:
             break;
     }
 }

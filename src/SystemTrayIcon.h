@@ -6,10 +6,14 @@
 #include <WinUser.h>
 #include <iostream>
 
+#define MENU_BUTTON_CLOSE 100
+#define MENU_BUTTON_OPEN 110
+
 class SystemTrayIcon {
     public:
         void configure(HWND winHandle, HINSTANCE hInstance);
         void command(LPARAM param);
+        void command(WPARAM param);
 
     private:
         NOTIFYICONDATA notifyIconData;
