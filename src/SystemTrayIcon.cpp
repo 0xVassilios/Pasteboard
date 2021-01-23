@@ -1,6 +1,8 @@
 #include "SystemTrayIcon.h"
 
 void SystemTrayIcon::configure(HWND winHandle, HINSTANCE hInstance) {
+    this->winHandle = winHandle;
+
     this->notifyIconData.cbSize           = sizeof(NOTIFYICONDATA);                            // The size of the structure.
     this->notifyIconData.hIcon            = (HICON) LoadImage(NULL, "clipboard.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE|LR_DEFAULTSIZE); 
     this->notifyIconData.hWnd             = winHandle;                                         // The handle of the window that processes information.
@@ -14,9 +16,14 @@ void SystemTrayIcon::configure(HWND winHandle, HINSTANCE hInstance) {
 }
 
 void SystemTrayIcon::command(LPARAM param) {
+    //TODO: Make exit button work. InsertMenu
     switch(param) {
         case WM_RBUTTONDOWN:
-            MessageBox(NULL, (LPCSTR) "Message", (LPCSTR) "Title", MB_OK);
+            POINT point;
+            GetCursorPos(&point);
+            HMENU hMenu = CreatePopupMenu();
+            InsertMenu(hMenu, 0, MF_BYPOSITION | MF_STRING, 100, (LPCSTR) "Exit");
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN, point.x, point.y, 0, this->winHandle, NULL);
             break;
     }
 }

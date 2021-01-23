@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <shellapi.h>
+#include <WinUser.h>
 #include <iostream>
 
 class SystemTrayIcon {
@@ -12,6 +13,7 @@ class SystemTrayIcon {
 
     private:
         NOTIFYICONDATA notifyIconData;
+        HWND winHandle;
 };
 
 #endif

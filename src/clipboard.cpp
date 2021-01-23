@@ -41,6 +41,7 @@ void Clipboard::command(UINT uMsg) {
         case WM_DESTROY: {
             // Stop watching the clipboard content.
             RemoveClipboardFormatListener(this->winHandle);
+            PostQuitMessage(0);
             break;
         }
 

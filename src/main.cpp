@@ -3,6 +3,8 @@
 #include <iostream>
 #include <windows.h>
 
+#define WM_USERACTION (WM_USER + 1)
+
 SystemTrayIcon systemTrayIcon = SystemTrayIcon();
 Clipboard clipboard = Clipboard();
 
@@ -10,7 +12,7 @@ LRESULT CALLBACK ClipboardProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
     if (uMsg == WM_CREATE || uMsg == WM_DESTROY || uMsg == WM_CLIPBOARDUPDATE || uMsg == WM_CLOSE) {
         clipboard.configure(hwnd);
         clipboard.command(uMsg);
-    } else if (uMsg == (WM_USER + 1)) {
+    } else if (uMsg == WM_USERACTION) {
         systemTrayIcon.command(lParam);
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
