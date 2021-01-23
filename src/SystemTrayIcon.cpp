@@ -12,7 +12,10 @@ void SystemTrayIcon::configure(HWND winHandle, HINSTANCE hInstance) {
     this->notifyIconData.uVersion         = NOTIFYICON_VERSION;                                // Defines the behaviour of the icon based on the Win version.
     strncpy(this->notifyIconData.szTip, "Pasteboard", sizeof(this->notifyIconData.szTip));     // Setting the tooltip text to the application's name.
 
-    Shell_NotifyIcon(NIM_ADD, &this->notifyIconData);
+    // Delete an existing icon if it exists otherwise add it.
+    if (!(Shell_NotifyIcon(NIM_DELETE, &this->notifyIconData))) {
+        Shell_NotifyIcon(NIM_ADD, &this->notifyIconData);
+    }
 }
 
 void SystemTrayIcon::command(LPARAM param) {
@@ -38,6 +41,7 @@ void SystemTrayIcon::command(WPARAM param) {
 
         case MENU_BUTTON_OPEN:
             MessageBox(this->winHandle, (LPCSTR) "WIP: Open the menu.", (LPCSTR) "Notes", MB_OK);
+            break;
 
         default:
             break;
